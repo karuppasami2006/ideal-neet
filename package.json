@@ -1,0 +1,18 @@
+{
+  "name": "jp-neet",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "aos": "^2.3.4",
+    "lucide": "^0.479.0"
+  },
+  "devDependencies": {
+    "vite": "^8.0.4"
+  }
+}
