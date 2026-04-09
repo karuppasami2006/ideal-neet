@@ -23,17 +23,16 @@ document.addEventListener('DOMContentLoaded', () => {
     
     if (navToggle) {
         navToggle.addEventListener('click', () => {
-            // Simple toggle for mobile (could be improved with a class)
-            const isVisible = navLinks.style.display === 'flex';
-            navLinks.style.display = isVisible ? 'none' : 'flex';
-            navLinks.style.flexDirection = 'column';
-            navLinks.style.position = 'absolute';
-            navLinks.style.top = '80px';
-            navLinks.style.left = '0';
-            navLinks.style.width = '100%';
-            navLinks.style.background = 'white';
-            navLinks.style.padding = '20px';
-            navLinks.style.boxShadow = '0 10px 20px rgba(0,0,0,0.1)';
+            navLinks.classList.toggle('active');
+            
+            // Toggle icon between menu and x
+            const icon = navToggle.querySelector('i, svg');
+            if (navLinks.classList.contains('active')) {
+                icon.setAttribute('data-lucide', 'x');
+            } else {
+                icon.setAttribute('data-lucide', 'menu');
+            }
+            if (window.lucide) window.lucide.createIcons();
         });
     }
 
@@ -111,8 +110,12 @@ document.addEventListener('DOMContentLoaded', () => {
             router();
             
             // Close mobile menu if open
-            if (navLinks.style.display === 'flex') {
-                navLinks.style.display = 'none';
+            if (navLinks.classList.contains('active')) {
+                navLinks.classList.remove('active');
+                // Reset toggle icon
+                const icon = navToggle.querySelector('i, svg');
+                if (icon) icon.setAttribute('data-lucide', 'menu');
+                if (window.lucide) window.lucide.createIcons();
             }
         }
     });
