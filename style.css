@@ -22,7 +22,7 @@
     --font-heading: 'Nunito', sans-serif;
     --font-body: 'Open Sans', sans-serif;
 
-    --transition-smooth: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    --transition-smooth: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
     --shadow-soft: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01);
     --shadow-lift: 0 20px 25px -5px rgba(0, 0, 0, 0.15), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
 }
@@ -932,7 +932,7 @@ img {
 /* INTERNAL PAGE HEADER */
 .page-header {
     background: var(--primary-blue);
-    padding: 100px 0 40px;
+    padding: 85px 0 35px;
     text-align: center;
     color: var(--white);
     margin-bottom: 36px;
@@ -1217,14 +1217,9 @@ img {
     right: 30px;
     width: 60px;
     height: 60px;
-    background: #25D366;
-    color: white;
-    border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 30px;
-    box-shadow: 0 10px 25px rgba(37, 211, 102, 0.4);
     z-index: 9999;
     transition: transform 0.3s ease;
 }
@@ -1412,7 +1407,7 @@ img {
         scroll-snap-type: x mandatory;
         -webkit-overflow-scrolling: touch;
         gap: 10px;
-        padding-bottom: 8px;
+        padding: 20px 0 8px;
         scrollbar-width: none;
     }
 
@@ -1424,6 +1419,15 @@ img {
         scroll-snap-align: start;
         /* Reset the popular scale so it doesn't overflow */
         transform: none !important;
+        margin-top: 15px;
+    }
+
+    .page-header {
+        padding: 70px 0 25px;
+    }
+
+    .page-header h1 {
+        font-size: 2.2rem;
     }
 
     .stats-grid,
