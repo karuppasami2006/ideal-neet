@@ -351,10 +351,6 @@ img {
     max-width: 600px;
     margin-left: auto;
     margin-right: auto;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
 }
 
 .hero-btns {
@@ -516,22 +512,15 @@ img {
 .icon-blue  { background: var(--primary-blue); }
 
 .feature-card h3 {
-    font-size: 0.92rem;
+    font-size: 0.95rem;
     font-weight: 700;
-    margin-bottom: 4px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    margin-bottom: 6px;
 }
 
 .feature-card p {
     color: var(--gray-text);
-    font-size: 0.78rem;
-    line-height: 1.4;
-    display: -webkit-box;
-    -webkit-line-clamp: 1;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
+    font-size: 0.82rem;
+    line-height: 1.5;
 }
 
 /* ABROAD STUDIES */
@@ -1395,11 +1384,46 @@ img {
         font-size: 2rem;
     }
 
-    /* 2-column grid on mobile for features, programs, abroad, reviews */
-    .features-grid,
+    /* Features: horizontal swipe scroll on mobile */
+    .features-grid {
+        display: flex;
+        flex-direction: row;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        -webkit-overflow-scrolling: touch;
+        gap: 10px;
+        padding-bottom: 8px;
+        scrollbar-width: none;
+    }
+
+    .features-grid::-webkit-scrollbar { display: none; }
+
+    .features-grid .feature-card {
+        flex: 0 0 72vw;
+        max-width: 72vw;
+        scroll-snap-align: start;
+    }
+
+    /* Programs: horizontal swipe scroll on mobile */
     .offers-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 8px;
+        display: flex;
+        flex-direction: row;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        -webkit-overflow-scrolling: touch;
+        gap: 10px;
+        padding-bottom: 8px;
+        scrollbar-width: none;
+    }
+
+    .offers-grid::-webkit-scrollbar { display: none; }
+
+    .offers-grid .offer-card {
+        flex: 0 0 78vw;
+        max-width: 78vw;
+        scroll-snap-align: start;
+        /* Reset the popular scale so it doesn't overflow */
+        transform: none !important;
     }
 
     .stats-grid,
