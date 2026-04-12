@@ -234,11 +234,36 @@ img {
     width: 100%;
 }
 
-.logo-box {
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
     font-weight: 800;
-    font-size: 1.2rem;
+    font-size: 1.25rem;
     color: var(--primary-blue);
     letter-spacing: -0.5px;
+}
+
+.logo img {
+    height: 50px;
+    width: auto;
+    object-fit: contain;
+    border-radius: 8px;
+    transition: var(--transition-smooth);
+}
+
+.logo-text {
+    display: block;
+    line-height: 1.1;
+}
+
+@media (max-width: 480px) {
+    .logo-text {
+        font-size: 1rem;
+    }
+    .logo img {
+        height: 40px;
+    }
 }
 
 .nav-links {
@@ -402,6 +427,44 @@ img {
     justify-content: center;
     gap: 14px;
     flex-wrap: wrap;
+}
+
+.hero-logo-middle {
+    margin-bottom: 25px;
+}
+
+.hero-logo-middle img {
+    height: 120px;
+    width: auto;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    border: 2px solid rgba(255,255,255,0.2);
+}
+
+@media (max-width: 768px) {
+    .hero-logo-middle img {
+        height: 100px;
+    }
+}
+
+/* LAPTOP VIEW: Static Background, No Animation */
+@media (min-width: 1025px) {
+    .hero-bg-container {
+        background-image: url('/image-video/img1.jpeg');
+        background-size: cover;
+        background-position: center;
+    }
+    
+    .hero-bg-item {
+        display: none !important;
+    }
+}
+
+/* MOBILE VIEW: Keep animations enabled (handled by main.js) */
+@media (max-width: 1024px) {
+    .hero-bg-container {
+        background: transparent;
+    }
 }
 
 /* TRUST STATS BAR */

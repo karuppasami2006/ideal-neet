@@ -484,6 +484,50 @@ button {
     flex-wrap: wrap;
 }
 
+.hero-logo-middle {
+    margin-bottom: 25px;
+}
+
+.hero-logo-middle img {
+    height: 120px;
+    width: auto;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    border: 2px solid rgba(255,255,255,0.2);
+}
+
+@media (max-width: 768px) {
+    .hero-logo-middle img {
+        height: 100px;
+    }
+}
+
+/* LAPTOP VIEW: Static Background, No Video */
+@media (min-width: 1025px) {
+    .hero {
+        background-image: url('/images/img1.jpeg') !important;
+        background-size: cover;
+        background-position: center;
+    }
+    
+    .hero-video-bg, 
+    .hero-poster-bg {
+        display: none !important;
+    }
+}
+
+/* MOBILE VIEW: Keep video enabled */
+@media (max-width: 1024px) {
+    .hero {
+        background: transparent;
+    }
+    
+    .hero-video-bg {
+        display: block;
+    }
+}
+
+
 .hero-btns .btn {
     padding: 12px 22px;
     font-size: 0.88rem;

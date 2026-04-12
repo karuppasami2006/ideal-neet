@@ -54,6 +54,15 @@ export default function Hero() {
 
       {/* Hero foreground content */}
       <div className="container hero-content">
+        <div className="hero-logo-middle fade-in-up">
+          <Image
+            src="/images/neet_logo.jpeg"
+            alt="Ideal NEET Academy"
+            width={120}
+            height={120}
+            style={{ borderRadius: "12px" }}
+          />
+        </div>
         <h1 className="hero-title fade-in-up">
           Trichy&apos;s Leading <br />
           <span className="highlight">NEET Academy</span>

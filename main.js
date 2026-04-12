@@ -74,50 +74,74 @@ document.addEventListener('DOMContentLoaded', () => {
         observer.observe(statsSection);
     }
 
-    // 5. SPA ROUTING
+    // 5. HYBRID SPA ROUTING
     const router = () => {
-        let path = window.location.pathname;
-        if (path === '/' || path === '/index.html') path = '/home';
+        const path = window.location.pathname;
+        const hash = window.location.hash;
         
-        // Find target id from path (replace leading slash)
-        const targetId = path.substring(1);
-        const targetSection = document.getElementById(targetId);
+        // Priority 1: Scroll to Hash if present (e.g. /#features)
+        if (hash) {
+            const targetSection = document.querySelector(hash);
+            if (targetSection) {
+                setTimeout(() => {
+                    const navbarHeight = document.getElementById('navbar')?.offsetHeight || 80;
+                    const targetPosition = targetSection.getBoundingClientRect().top + window.pageYOffset - navbarHeight;
+                    window.scrollTo({ top: targetPosition, behavior: 'smooth' });
+                }, 100);
+                return;
+            }
+        }
+
+        // Priority 2: Scroll to Path-based section (e.g. /about)
+        let normalizedPath = path === '/' || path === '/index.html' ? 'home' : path.replace(/\.html$/, '').substring(1);
+        const targetSection = document.getElementById(normalizedPath);
         
         if (targetSection) {
-            // Scroll smoothly to target section
             setTimeout(() => {
-                const navbarHeight = document.getElementById('navbar').offsetHeight || 80;
+                const navbarHeight = document.getElementById('navbar')?.offsetHeight || 80;
                 const targetPosition = targetSection.getBoundingClientRect().top + window.pageYOffset - navbarHeight;
-                window.scrollTo({
-                    top: targetPosition,
-                    behavior: 'smooth'
-                });
-            }, 50); // slight delay to ensure layout is ready
+                window.scrollTo({ top: targetPosition, behavior: 'smooth' });
+            }, 50);
         }
     };
 
-    // Intercept internal link clicks to use pushState
+    // Intercept internal link clicks
     document.addEventListener('click', (e) => {
         const anchor = e.target.closest('a');
         if (!anchor) return;
         
         const href = anchor.getAttribute('href');
+        const target = anchor.getAttribute('target');
         
-        // Route only internal absolute paths (e.g. /home, /features)
-        if (href && href.startsWith('/') && anchor.target !== '_blank') {
-            e.preventDefault();
-            window.history.pushState(null, '', href);
-            router();
-            
-            // Close mobile menu if open
-            if (navLinks.classList.contains('active')) {
-                navLinks.classList.remove('active');
-                // Reset toggle icon
-                const icon = navToggle.querySelector('i, svg');
-                if (icon) icon.setAttribute('data-lucide', 'menu');
-                if (window.lucide) window.lucide.createIcons();
+        // Skip external, blank, or non-relative links
+        if (!href || !href.startsWith('/') || target === '_blank') return;
+
+        const onHomePage = window.location.pathname === '/' || window.location.pathname === '/index.html' || window.location.pathname === '/home';
+        const isHashLink = href.includes('#');
+
+        // Navigation logic:
+        // 1. If we are on Home and click a hash link or path that exists on Home -> SPA scroll
+        // 2. If we are NOT on Home and click a hash link -> Let it navigate to Home#hash
+        // 3. If we click a separate page (e.g. /about) -> Let it navigate (for actual page load and SEO)
+        
+        if (onHomePage) {
+            // Try to see if target exists on current page
+            const targetId = isHashLink ? href.split('#')[1] : href.substring(1);
+            if (document.getElementById(targetId) || targetId === '' || targetId === 'home') {
+                e.preventDefault();
+                window.history.pushState(null, '', href);
+                router();
+                
+                // Close mobile menu
+                if (navLinks.classList.contains('active')) {
+                    navLinks.classList.remove('active');
+                    const icon = navToggle?.querySelector('i, svg');
+                    if (icon) icon.setAttribute('data-lucide', 'menu');
+                    if (window.lucide) window.lucide.createIcons();
+                }
             }
         }
+        // If not on home, let default navigation happen so the browser loads index.html#hash or about.html
     });
 
     // Listen to browser Back/Forward navigation
@@ -216,6 +240,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Background Carousel Logic
         function updateBackground() {
+            // LAPTOP VIEW: Skip animations and set static background
+            if (window.innerWidth >= 1025) {
+                bgContainer.innerHTML = `
+                    <div class="hero-bg-item active">
+                        <img src="/image-video/img1.jpeg" style="width: 100%; height: 100%; object-fit: cover;">
+                    </div>
+                `;
+                return;
+            }
+
             const asset = bgAssets[currentAssetIdx];
             bgContainer.innerHTML = '';
             
@@ -232,8 +266,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 video.style.height = '100%';
                 video.style.objectFit = 'cover';
                 video.onended = () => {
-                    currentAssetIdx = (currentAssetIdx + 1) % bgAssets.length;
-                    updateBackground();
+                    if (window.innerWidth < 1025) {
+                        currentAssetIdx = (currentAssetIdx + 1) % bgAssets.length;
+                        updateBackground();
+                    }
                 };
                 bgItem.appendChild(video);
             } else {
@@ -245,8 +281,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 bgItem.appendChild(img);
                 
                 setTimeout(() => {
-                    currentAssetIdx = (currentAssetIdx + 1) % bgAssets.length;
-                    updateBackground();
+                    if (window.innerWidth < 1025) {
+                        currentAssetIdx = (currentAssetIdx + 1) % bgAssets.length;
+                        updateBackground();
+                    }
                 }, 5000);
             }
             bgContainer.appendChild(bgItem);
@@ -279,5 +317,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
         updateBackground();
         type();
+
+        // Re-check background on window resize
+        window.addEventListener('resize', () => {
+             // Only reset if we cross the boundary
+             const isLaptop = window.innerWidth >= 1025;
+             const wasLaptop = bgContainer.querySelector('.hero-bg-item img')?.src?.includes('img1.jpeg') && !bgContainer.querySelector('video');
+             
+             if (isLaptop !== wasLaptop) {
+                 updateBackground();
+             }
+        });
     }
 });
