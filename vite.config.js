@@ -15,6 +15,7 @@ export default defineConfig({
         programs: resolve(__dirname, 'programs.html'),
         abroad:  resolve(__dirname, 'abroad.html'),
         contact: resolve(__dirname, 'contact.html'),
+        'feature-details': resolve(__dirname, 'feature-details.html'),
       }
     }
   }
