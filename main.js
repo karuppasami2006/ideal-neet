@@ -190,21 +190,47 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 7. FORM SUBMISSION TO WHATSAPP
     const contactForm = document.getElementById('contact-form');
+    
+    // Real-time Phone Validation (Only numbers)
+    const phoneInputs = document.querySelectorAll('input[type="tel"]');
+    phoneInputs.forEach(input => {
+        input.addEventListener('input', (e) => {
+            e.target.value = e.target.value.replace(/[^0-9]/g, '');
+        });
+    });
+
     if (contactForm) {
         contactForm.addEventListener('submit', (e) => {
             e.preventDefault();
             
-            // Extract values using querySelector since no IDs are present
-            const name = contactForm.querySelector('input[type="text"]').value;
-            const phone = contactForm.querySelector('input[type="tel"]').value;
-            const email = contactForm.querySelector('input[type="email"]').value;
+            // Extract values
+            const name = contactForm.querySelector('input[type="text"]').value.trim();
+            const phone = contactForm.querySelector('input[type="tel"]').value.trim();
+            const email = contactForm.querySelector('input[type="email"]').value.trim();
             const course = contactForm.querySelector('select').value;
-            const message = contactForm.querySelector('textarea').value;
+            const message = contactForm.querySelector('textarea').value.trim();
+            
+            // Advanced Validation
+            if (phone.length !== 10) {
+                alert("Please enter a valid 10-digit mobile number.");
+                return;
+            }
+
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+            if (!emailRegex.test(email)) {
+                alert("Please enter a complete and valid email address (e.g., name@domain.com).");
+                return;
+            }
+
+            if (name.length < 2) {
+                alert("Please enter your full name.");
+                return;
+            }
             
             let whatsappText = `Hi, I want to get in touch!\n\n`;
             whatsappText += `*Name:* ${name}\n`;
             whatsappText += `*Phone:* ${phone}\n`;
-            if (email) whatsappText += `*Email:* ${email}\n`;
+            whatsappText += `*Email:* ${email}\n`;
             whatsappText += `*Course:* ${course}\n\n`;
             if (message) whatsappText += `*Message:* ${message}`;
             
@@ -216,79 +242,31 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // 8. HERO TRANSITIONS (Background & Typing)
-    const bgContainer = document.querySelector('.hero-bg-container');
+    const bgItems = document.querySelectorAll('.hero-bg-item');
     const typeTarget = document.getElementById('type-target');
     
-    if (bgContainer && typeTarget) {
-        const bgAssets = [
-            { type: 'image', src: '/image-video/img1.jpeg' },
-            { type: 'image', src: '/image-video/img2.jpeg' },
-            { type: 'video', src: '/image-video/vid1.mp4' },
-            { type: 'video', src: '/image-video/vid3.mp4' }
-        ];
-
+    if (bgItems.length > 0 && typeTarget) {
+        
+        let currentIdx = 0;
         const typingSentences = [
             "Trichy's Affordable NEET Academy",
             "Trichy's Leading NEET Academy",
             "Best Result Oriented Coaching"
         ];
+        
+        // Background Carousel Logic (Works on all screen sizes)
+        function cycleBackground() {
+            bgItems[currentIdx].classList.remove('active');
+            currentIdx = (currentIdx + 1) % bgItems.length;
+            bgItems[currentIdx].classList.add('active');
+        }
+        
+        // Change image every 6 seconds
+        setInterval(cycleBackground, 6000);
 
-        let currentAssetIdx = 0;
         let sentenceIdx = 0;
         let charIdx = 0;
         let isDeleting = false;
-
-        // Background Carousel Logic
-        function updateBackground() {
-            // LAPTOP VIEW: Skip animations and set static background
-            if (window.innerWidth >= 1025) {
-                bgContainer.innerHTML = `
-                    <div class="hero-bg-item active">
-                        <img src="/image-video/img1.jpeg" style="width: 100%; height: 100%; object-fit: cover;">
-                    </div>
-                `;
-                return;
-            }
-
-            const asset = bgAssets[currentAssetIdx];
-            bgContainer.innerHTML = '';
-            
-            const bgItem = document.createElement('div');
-            bgItem.className = 'hero-bg-item active';
-            
-            if (asset.type === 'video') {
-                const video = document.createElement('video');
-                video.src = asset.src;
-                video.autoplay = true;
-                video.muted = true;
-                video.playsInline = true;
-                video.style.width = '100%';
-                video.style.height = '100%';
-                video.style.objectFit = 'cover';
-                video.onended = () => {
-                    if (window.innerWidth < 1025) {
-                        currentAssetIdx = (currentAssetIdx + 1) % bgAssets.length;
-                        updateBackground();
-                    }
-                };
-                bgItem.appendChild(video);
-            } else {
-                const img = document.createElement('img');
-                img.src = asset.src;
-                img.style.width = '100%';
-                img.style.height = '100%';
-                img.style.objectFit = 'cover';
-                bgItem.appendChild(img);
-                
-                setTimeout(() => {
-                    if (window.innerWidth < 1025) {
-                        currentAssetIdx = (currentAssetIdx + 1) % bgAssets.length;
-                        updateBackground();
-                    }
-                }, 5000);
-            }
-            bgContainer.appendChild(bgItem);
-        }
 
         // Typing Effect Logic
         function type() {
@@ -315,18 +293,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
-        updateBackground();
         type();
-
-        // Re-check background on window resize
-        window.addEventListener('resize', () => {
-             // Only reset if we cross the boundary
-             const isLaptop = window.innerWidth >= 1025;
-             const wasLaptop = bgContainer.querySelector('.hero-bg-item img')?.src?.includes('img1.jpeg') && !bgContainer.querySelector('video');
-             
-             if (isLaptop !== wasLaptop) {
-                 updateBackground();
-             }
-        });
     }
 });
